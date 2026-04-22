@@ -1,221 +1,253 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Search, Calendar, Users, MapPin, Star, ShieldCheck, Clock, HeartHandshake, ArrowRight, Quote } from "lucide-react";
+import { Search, MapPin, ArrowRight, ArrowUpRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionHeading } from "@/components/marhaba/SectionHeading";
-import { Zellige } from "@/components/marhaba/Zellige";
+import { Squiggle, HandArrow } from "@/components/marhaba/Squiggle";
 
-const HERO_IMAGES = [
-  "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=80",
-  "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=80",
-  "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=2000&q=80",
-  "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=2000&q=80",
-];
+const HERO = "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=2000&q=80";
 
-const DESTINATIONS = [
-  { name: "Marrakech", tag: "Imperial city", img: "https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?auto=format&fit=crop&w=900&q=80" },
-  { name: "Fez", tag: "Spiritual heart", img: "https://images.unsplash.com/photo-1531219432768-9f540ce5c279?auto=format&fit=crop&w=900&q=80" },
-  { name: "Chefchaouen", tag: "The blue pearl", img: "https://images.unsplash.com/photo-1553244221-4148f4ad8be4?auto=format&fit=crop&w=900&q=80" },
-  { name: "Sahara", tag: "Endless dunes", img: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=900&q=80" },
-  { name: "Casablanca", tag: "Coastal modernity", img: "https://images.unsplash.com/photo-1577147443647-81856d5151af?auto=format&fit=crop&w=900&q=80" },
-  { name: "Essaouira", tag: "Atlantic breeze", img: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=900&q=80" },
-];
-
-const EXPERIENCES = [
-  { title: "Camel trek under the stars", img: "https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=1000&q=80", desc: "Sleep beneath the Sahara sky in a luxury Berber camp." },
-  { title: "Riad nights in Marrakech", img: "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1000&q=80", desc: "Hidden courtyards, mint tea, lantern-lit dinners." },
-  { title: "Tagine cooking ateliers", img: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=1000&q=80", desc: "Learn from grandmothers in the souk's secret kitchens." },
-  { title: "Surf in Taghazout", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1000&q=80", desc: "Atlantic swells, golden cliffs, fishermen at dawn." },
+const POLAROIDS = [
+  { img: "https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?auto=format&fit=crop&w=700&q=80", caption: "Marrakech, 06:42", rotate: "-rotate-3" },
+  { img: "https://images.unsplash.com/photo-1553244221-4148f4ad8be4?auto=format&fit=crop&w=700&q=80", caption: "Chefchaouen blues", rotate: "rotate-2" },
+  { img: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=700&q=80", caption: "Sahara nights", rotate: "-rotate-2" },
 ];
 
 const STORIES = [
-  { name: "Sofia · Italy", text: "Three weeks in Morocco changed me. Marhaba's guides made every village feel like home.", rating: 5 },
-  { name: "James · UK", text: "From the Sahara to Chefchaouen — flawless logistics, unforgettable people.", rating: 5 },
-  { name: "Yuki · Japan", text: "Their custom itinerary captured exactly what I dreamed of. Sublime.", rating: 5 },
+  { tag: "Desert", title: "Three nights under the Erg Chebbi sky", img: "https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=900&q=80", read: "8 min read", author: "Yasmine B." },
+  { tag: "Coast", title: "Why Essaouira is the soul of Atlantic Morocco", img: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=900&q=80", read: "6 min read", author: "Karim E." },
+  { tag: "Cities", title: "A walking diary through Fez el-Bali", img: "https://images.unsplash.com/photo-1531219432768-9f540ce5c279?auto=format&fit=crop&w=900&q=80", read: "11 min read", author: "Layla T." },
+  { tag: "Atlas", title: "Sleeping in a Berber village above the clouds", img: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=900&q=80", read: "7 min read", author: "Hassan A." },
+];
+
+const VOICES = [
+  { name: "Sofia · Italy", text: "Marhaba designed three weeks I'll talk about for the rest of my life. Every detail — every meal — was thoughtful." },
+  { name: "James · UK", text: "From the dunes of Merzouga to a riad in Fez, this was the most well-crafted trip of my life." },
 ];
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Marhaba — Where every alley tells a thousand years | Morocco travel & booking" },
-      { name: "description", content: "Discover Morocco with Marhaba. Tours, excursions, transfers and bespoke journeys crafted by local experts since 1992." },
-      { property: "og:title", content: "Marhaba — Morocco travel & booking" },
-      { property: "og:description", content: "Cinematic journeys through Marrakech, Fez, the Sahara, Chefchaouen and beyond." },
-      { property: "og:image", content: HERO_IMAGES[0] },
-      { name: "twitter:image", content: HERO_IMAGES[0] },
+      { title: "Marhaba — A travel house from Morocco" },
+      { name: "description", content: "An editorial travel house crafting unforgettable Moroccan journeys since 1992. Tours, excursions, transfers, and bespoke trips." },
+      { property: "og:title", content: "Marhaba — A travel house from Morocco" },
+      { property: "og:description", content: "Stories, journeys and bespoke trips through Marrakech, Fez, the Sahara and beyond." },
+      { property: "og:image", content: HERO },
+      { name: "twitter:image", content: HERO },
     ],
   }),
   component: HomePage,
 });
 
 function HomePage() {
-  const [heroIdx, setHeroIdx] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setHeroIdx((i) => (i + 1) % HERO_IMAGES.length), 6000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <div>
-      {/* 1. HERO */}
-      <section className="relative h-screen min-h-[700px] w-full overflow-hidden">
-        {HERO_IMAGES.map((src, i) => (
-          <div
-            key={src}
-            className={`absolute inset-0 transition-opacity duration-[2000ms] ${i === heroIdx ? "opacity-100" : "opacity-0"}`}
-          >
-            <img src={src} alt="Morocco" className="h-full w-full object-cover kenburns" />
-          </div>
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-midnight/40 via-midnight/30 to-midnight/80" />
+      {/* 1. EDITORIAL HERO — magazine cover */}
+      <section className="relative overflow-hidden bg-paper">
+        <div className="mx-auto max-w-7xl px-6 pt-10 md:pt-16 pb-16 md:pb-24 grid lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-7 relative">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-[11px] uppercase tracking-[0.32em] font-bold text-coral">Issue 32 · Spring '26</span>
+              <Squiggle className="w-12 h-2 text-mustard" />
+            </div>
+            <h1 className="font-display text-[clamp(3rem,7vw,6.5rem)] leading-[0.95] text-ink text-balance">
+              Wander <em className="text-coral">slowly,</em>
+              <br />
+              feel <span className="font-script text-mustard text-[1.1em] leading-none">everything</span>
+              <br />
+              in Morocco.
+            </h1>
+            <p className="mt-7 text-lg text-ink/70 max-w-lg leading-relaxed">
+              An editorial travel house guiding curious souls through medinas, dunes, riads and rituals — since 1992.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Button asChild className="bg-ink text-cream hover:bg-coral rounded-full h-12 px-7 text-xs uppercase tracking-[0.22em] font-bold">
+                <Link to="/tours">Browse journeys <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+              <Link to="/custom" className="group inline-flex items-center gap-2 text-ink font-semibold underline-wave">
+                Or design your own <ArrowUpRight className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
+              </Link>
+            </div>
 
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-primary-foreground">
-          <p className="text-xs uppercase tracking-[0.4em] text-accent mb-6 animate-[fade-up_1s_ease-out]">Marhaba — Welcome</p>
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-medium max-w-5xl leading-[0.95] text-balance drop-shadow-lg">
-            Where every alley tells <em className="text-accent not-italic">a thousand years</em>
-          </h1>
-          <p className="mt-8 max-w-2xl text-lg md:text-xl text-primary-foreground/85 text-balance">
-            Curated journeys through Morocco's medinas, dunes and riads — designed by locals, lived by you.
-          </p>
-          <Zellige className="mt-8 text-accent" />
-          <div className="mt-8 flex flex-wrap gap-4 justify-center">
-            <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold h-12 px-8">
-              <Link to="/tours">Explore tours <ArrowRight className="ml-1 h-4 w-4" /></Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground hover:text-primary h-12 px-8">
-              <Link to="/custom">Design my trip</Link>
-            </Button>
+            <div className="mt-12 hidden md:flex items-center gap-8 text-xs uppercase tracking-[0.2em] text-ink/50">
+              <span>30+ years</span>
+              <span className="h-px w-8 bg-ink/20" />
+              <span>47 local guides</span>
+              <span className="h-px w-8 bg-ink/20" />
+              <span>60,000 travelers</span>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 relative h-[460px] md:h-[560px]">
+            {POLAROIDS.map((p, i) => (
+              <figure
+                key={i}
+                className={`absolute bg-paper p-3 pb-12 shadow-polaroid ${p.rotate}`}
+                style={{
+                  width: "260px",
+                  top: `${i * 70}px`,
+                  left: `${i * 80}px`,
+                  zIndex: i,
+                }}
+              >
+                <div className="aspect-[4/5] overflow-hidden bg-muted">
+                  <img src={p.img} alt={p.caption} className="h-full w-full object-cover kenburns" />
+                </div>
+                <figcaption className="absolute bottom-2 left-0 right-0 text-center font-script text-xl text-ink">{p.caption}</figcaption>
+              </figure>
+            ))}
+            <div className="absolute -bottom-2 -left-4 hidden md:flex flex-col items-start text-coral">
+              <HandArrow className="w-20 h-10" />
+              <span className="font-script text-xl ml-2 -mt-1">snapshots from the road</span>
+            </div>
+          </div>
+        </div>
+        <div className="border-y border-border bg-cream py-3 overflow-hidden marquee-mask">
+          <div className="flex ticker whitespace-nowrap gap-12 text-sm uppercase tracking-[0.3em] text-ink/60 font-semibold">
+            {Array.from({ length: 2 }).map((_, k) => (
+              <span key={k} className="flex items-center gap-12">
+                <span>Marrakech ✦</span><span>Fez ✦</span><span>Sahara ✦</span><span>Chefchaouen ✦</span><span>Atlas ✦</span><span>Essaouira ✦</span><span>Casablanca ✦</span><span>Tangier ✦</span>
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 2. QUICK BOOKING BAR */}
-      <section className="relative -mt-16 z-20 px-6">
-        <form
-          onSubmit={(e) => { e.preventDefault(); toast.success("Searching journeys...", { description: "Your perfect Morocco awaits." }); }}
-          className="mx-auto max-w-6xl bg-card shadow-elegant rounded-2xl p-6 md:p-8 border border-border"
-        >
-          <div className="grid gap-4 md:grid-cols-5">
-            <div className="md:col-span-1">
-              <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Type</label>
-              <select className="mt-2 w-full h-11 rounded-md border border-input bg-background px-3 text-sm">
-                <option>Tours</option><option>Excursions</option><option>Transfers</option><option>Custom</option>
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Destination</label>
-              <div className="relative mt-2">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input className="h-11 pl-9" placeholder="Marrakech, Sahara..." />
+      {/* 2. SEARCH + DESTINATION CARDS */}
+      <section className="px-6 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-4">
+            <SectionHeading kicker="Begin here" title="Where to next," script="dreamer?" align="left" description="Pick a place that's been calling you. We'll do the rest." />
+            <form
+              onSubmit={(e) => { e.preventDefault(); toast.success("Searching journeys..."); }}
+              className="mt-8 bg-cream p-5 rounded-2xl border border-border space-y-3"
+            >
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-coral" />
+                <Input className="h-11 pl-9 bg-paper" placeholder="Marrakech, Sahara, Fez..." />
               </div>
-            </div>
-            <div>
-              <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Date</label>
-              <div className="relative mt-2">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input type="date" className="h-11 pl-9" />
-              </div>
-            </div>
-            <div>
-              <label className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">Travelers</label>
-              <div className="relative mt-2">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input type="number" min={1} defaultValue={2} className="h-11 pl-9" />
-              </div>
-            </div>
+              <Input type="date" className="h-11 bg-paper" />
+              <Button type="submit" className="w-full h-11 bg-ink text-cream hover:bg-coral rounded-full text-xs uppercase tracking-[0.2em] font-bold">
+                <Search className="mr-2 h-4 w-4" /> Find a journey
+              </Button>
+            </form>
           </div>
-          <Button type="submit" className="w-full mt-5 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-            <Search className="mr-2 h-4 w-4" /> Search journeys
-          </Button>
-        </form>
+          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              { name: "Marrakech", img: "https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?auto=format&fit=crop&w=600&q=80", trips: 24 },
+              { name: "Fez", img: "https://images.unsplash.com/photo-1531219432768-9f540ce5c279?auto=format&fit=crop&w=600&q=80", trips: 18 },
+              { name: "Chefchaouen", img: "https://images.unsplash.com/photo-1553244221-4148f4ad8be4?auto=format&fit=crop&w=600&q=80", trips: 12 },
+              { name: "Sahara", img: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=600&q=80", trips: 31 },
+              { name: "Essaouira", img: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=600&q=80", trips: 9 },
+              { name: "Atlas", img: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=600&q=80", trips: 16 },
+            ].map((d, i) => (
+              <Link to="/destinations" key={d.name} className={`group relative overflow-hidden rounded-2xl block ${i % 4 === 0 ? "aspect-[4/5] row-span-2" : "aspect-square"}`}>
+                <img src={d.img} alt={d.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 text-cream">
+                  <p className="font-display text-2xl">{d.name}</p>
+                  <p className="text-[11px] uppercase tracking-[0.25em] text-mustard mt-1">{d.trips} journeys</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* 3. FEATURED DESTINATIONS */}
-      <section className="px-6 py-24 md:py-32">
-        <SectionHeading eyebrow="Destinations" title="Six cities, one Kingdom" description="From snow-capped Atlas peaks to Atlantic surf — choose where your story begins." />
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-          {DESTINATIONS.map((d) => (
-            <Link key={d.name} to="/destinations" className="group relative h-80 overflow-hidden rounded-2xl block shadow-elegant">
-              <img src={d.img} alt={d.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-6 text-primary-foreground">
-                <p className="text-xs uppercase tracking-[0.2em] text-accent">{d.tag}</p>
-                <h3 className="font-display text-3xl font-medium mt-1">{d.name}</h3>
-                <p className="text-sm flex items-center gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Discover <ArrowRight className="h-3 w-3" />
-                </p>
-              </div>
+      {/* 3. THE JOURNAL — editorial story grid */}
+      <section className="bg-cream px-6 py-20 md:py-28 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-wrap justify-between items-end gap-6 mb-12">
+            <SectionHeading kicker="The journal" title="Field notes from" script="our travelers" align="left" />
+            <Link to="/destinations" className="text-xs uppercase tracking-[0.25em] font-bold text-coral hover:text-ink flex items-center gap-2">
+              View all stories <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. SIGNATURE EXPERIENCES */}
-      <section className="bg-secondary px-6 py-24 md:py-32">
-        <SectionHeading eyebrow="Experiences" title="Signature moments" description="Hand-picked rituals that turn a trip into a memory you'll tell forever." />
-        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
-          {EXPERIENCES.map((e, i) => (
-            <article key={e.title} className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-elegant transition-all duration-500 hover:-translate-y-1" style={{ animationDelay: `${i * 100}ms` }}>
-              <div className="aspect-[4/5] overflow-hidden">
-                <img src={e.img} alt={e.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          </div>
+          <div className="grid lg:grid-cols-12 gap-8">
+            <article className="lg:col-span-7 group">
+              <div className="aspect-[16/11] overflow-hidden rounded-2xl bg-muted relative">
+                <img src={STORIES[0].img} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <span className="absolute top-4 left-4 bg-coral text-cream text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1.5 rounded-full">{STORIES[0].tag}</span>
               </div>
-              <div className="p-5">
-                <h3 className="font-display text-xl font-medium">{e.title}</h3>
-                <p className="text-sm text-muted-foreground mt-2">{e.desc}</p>
+              <div className="mt-6">
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/50 mb-2">{STORIES[0].read} · by {STORIES[0].author}</p>
+                <h3 className="font-display text-3xl md:text-4xl text-ink leading-tight group-hover:text-coral transition">{STORIES[0].title}</h3>
               </div>
             </article>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. WHY US */}
-      <section className="px-6 py-24 md:py-32">
-        <SectionHeading eyebrow="Why Marhaba" title="Three decades. One devotion." description="We're not a booking platform. We're Moroccans who fell in love with our country and built a life sharing it." />
-        <div className="mt-14 grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
-          {[
-            { Icon: ShieldCheck, title: "30+ years of expertise", text: "Founded in 1992 — the first Moroccan agency to certify all guides locally." },
-            { Icon: Clock, title: "Instant confirmed booking", text: "Real availability, transparent pricing, free cancellation up to 48h." },
-            { Icon: HeartHandshake, title: "24/7 local support", text: "A real human in Marrakech is one WhatsApp away — every hour, every day." },
-          ].map(({ Icon, title, text }) => (
-            <div key={title} className="text-center px-4">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-saffron flex items-center justify-center shadow-glow">
-                <Icon className="h-7 w-7 text-accent-foreground" />
-              </div>
-              <h3 className="font-display text-2xl font-medium mt-5">{title}</h3>
-              <p className="text-muted-foreground mt-3">{text}</p>
+            <div className="lg:col-span-5 grid gap-6">
+              {STORIES.slice(1).map((s) => (
+                <article key={s.title} className="group flex gap-4 items-start">
+                  <div className="w-32 h-32 shrink-0 overflow-hidden rounded-xl bg-muted">
+                    <img src={s.img} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-coral">{s.tag}</span>
+                    <h4 className="font-display text-xl text-ink leading-tight mt-1.5 group-hover:text-coral transition">{s.title}</h4>
+                    <p className="text-xs uppercase tracking-[0.18em] text-ink/45 mt-2">{s.read} · {s.author}</p>
+                  </div>
+                </article>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
-      {/* 6. STORIES + NEWSLETTER */}
-      <section className="bg-primary text-primary-foreground px-6 py-24 md:py-32">
-        <SectionHeading eyebrow="Stories" title="Letters from our travelers" light />
-        <div className="mt-14 grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
-          {STORIES.map((s) => (
-            <figure key={s.name} className="bg-primary-foreground/5 backdrop-blur rounded-2xl p-6 border border-primary-foreground/10">
-              <Quote className="h-6 w-6 text-accent" />
-              <blockquote className="mt-4 text-primary-foreground/90 italic font-display text-lg leading-relaxed">"{s.text}"</blockquote>
-              <figcaption className="mt-5 flex items-center justify-between">
-                <span className="text-sm font-semibold">{s.name}</span>
-                <span className="flex gap-0.5">{Array.from({ length: s.rating }).map((_, i) => <Star key={i} className="h-3 w-3 fill-accent text-accent" />)}</span>
-              </figcaption>
-            </figure>
-          ))}
+      {/* 4. WHY US — bold 3 column with numbers */}
+      <section className="px-6 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeading kicker="Why Marhaba" title="Three decades. One" script="devotion." description="We're not a booking platform. We're Moroccans who built a life sharing the country we love." />
+          <div className="mt-16 grid md:grid-cols-3 gap-10">
+            {[
+              { n: "01", title: "Locally owned", text: "100% Moroccan-owned. Our guides earn 4× the regional average." },
+              { n: "02", title: "Slow & deep", text: "Smaller groups. Longer stays. Real homes, real meals, real people." },
+              { n: "03", title: "Always on call", text: "A real human in Marrakech, one WhatsApp away — 24 hours a day." },
+            ].map((c) => (
+              <div key={c.n} className="border-t-2 border-ink pt-6">
+                <p className="font-display text-7xl text-coral leading-none">{c.n}</p>
+                <h3 className="font-display text-2xl mt-4">{c.title}</h3>
+                <p className="text-ink/70 mt-3 leading-relaxed">{c.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
 
-        <div className="mt-20 max-w-2xl mx-auto text-center">
-          <h3 className="font-display text-3xl md:text-4xl">Letters from Morocco</h3>
-          <p className="mt-3 text-primary-foreground/70">Once a month. Stories, hidden gems, and travel offers — never spam.</p>
-          <form
-            onSubmit={(e) => { e.preventDefault(); toast.success("Welcome! Our first letter arrives soon."); (e.target as HTMLFormElement).reset(); }}
-            className="mt-6 flex flex-col sm:flex-row gap-3"
-          >
-            <Input type="email" required placeholder="your@email.com" className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 h-12" />
-            <Button type="submit" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-8 font-semibold">Subscribe</Button>
-          </form>
+      {/* 5. VOICES + NEWSLETTER */}
+      <section className="bg-ink text-cream px-6 py-20 md:py-28 relative overflow-hidden grain">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-7">
+              <p className="text-[11px] uppercase tracking-[0.32em] font-bold text-mustard">Voices from the road</p>
+              <h2 className="font-display text-4xl md:text-5xl mt-3 leading-[1.05] text-balance">
+                "The most well-crafted trip <em className="text-mustard">of our lives.</em>"
+              </h2>
+              <div className="mt-10 grid sm:grid-cols-2 gap-6">
+                {VOICES.map((v) => (
+                  <figure key={v.name} className="border-l-2 border-mustard pl-5">
+                    <div className="flex gap-0.5 mb-3">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3 w-3 fill-mustard text-mustard" />)}</div>
+                    <blockquote className="text-cream/85 leading-relaxed font-display text-lg italic">"{v.text}"</blockquote>
+                    <figcaption className="mt-3 text-xs uppercase tracking-[0.22em] text-mustard font-semibold">{v.name}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+            <div className="lg:col-span-5 lg:pl-8 lg:border-l border-cream/15">
+              <p className="font-script text-3xl text-mustard">letters from morocco</p>
+              <h3 className="font-display text-3xl mt-2">A monthly note. Stories, hidden corners, soft offers.</h3>
+              <form
+                onSubmit={(e) => { e.preventDefault(); toast.success("Welcome aboard!"); (e.target as HTMLFormElement).reset(); }}
+                className="mt-7 space-y-3"
+              >
+                <Input type="email" required placeholder="your@email.com" className="h-12 bg-cream/5 border-cream/20 text-cream placeholder:text-cream/40" />
+                <Button type="submit" className="w-full h-12 bg-mustard text-ink hover:bg-coral hover:text-cream rounded-full text-xs uppercase tracking-[0.22em] font-bold">
+                  Send me letters
+                </Button>
+              </form>
+              <p className="text-xs text-cream/50 mt-4">No spam. Unsubscribe anytime. By subscribing you agree to our terms.</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

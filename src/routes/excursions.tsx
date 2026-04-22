@@ -1,44 +1,41 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Star, Clock, Users, ArrowRight, Check, Sparkles } from "lucide-react";
+import { Star, Clock, Users, ArrowUpRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/marhaba/SectionHeading";
 
-const HERO = "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=2000&q=80";
+const HERO = "https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=2000&q=80";
 
 const CATEGORIES = [
-  { name: "Desert", img: "https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=600&q=80", count: 12 },
-  { name: "Mountains", img: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=600&q=80", count: 9 },
-  { name: "Coast", img: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=600&q=80", count: 7 },
-  { name: "Medina", img: "https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?auto=format&fit=crop&w=600&q=80", count: 14 },
-  { name: "Culinary", img: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=600&q=80", count: 8 },
-  { name: "Wellness", img: "https://images.unsplash.com/photo-1545578630-d6e1f6f1bd2c?auto=format&fit=crop&w=600&q=80", count: 5 },
+  { name: "Desert", count: 14, img: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=700&q=80", color: "bg-coral" },
+  { name: "Mountains", count: 9, img: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=700&q=80", color: "bg-teal" },
+  { name: "Coast", count: 11, img: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=700&q=80", color: "bg-mustard" },
+  { name: "Medina", count: 18, img: "https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?auto=format&fit=crop&w=700&q=80", color: "bg-rose" },
+  { name: "Culinary", count: 8, img: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=700&q=80", color: "bg-coral" },
+  { name: "Wellness", count: 6, img: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=700&q=80", color: "bg-teal" },
 ];
 
 const EXCURSIONS = [
-  { id: 1, title: "Ourika Valley & Berber Villages", duration: "Full day", price: 65, rating: 4.8, img: "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80" },
-  { id: 2, title: "Agafay Desert Sunset & Dinner", duration: "Half day", price: 95, rating: 4.9, img: "https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=900&q=80" },
-  { id: 3, title: "Essaouira Coastal Escape", duration: "Full day", price: 75, rating: 4.7, img: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=900&q=80" },
-  { id: 4, title: "Marrakech Medina Walking Tour", duration: "4 hours", price: 45, rating: 4.9, img: "https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?auto=format&fit=crop&w=900&q=80" },
-  { id: 5, title: "Tagine Cooking Class", duration: "3 hours", price: 55, rating: 5.0, img: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=900&q=80" },
-  { id: 6, title: "Hammam & Argan Oil Ritual", duration: "2 hours", price: 70, rating: 4.8, img: "https://images.unsplash.com/photo-1545578630-d6e1f6f1bd2c?auto=format&fit=crop&w=900&q=80" },
-  { id: 7, title: "Imlil Atlas Trek", duration: "Full day", price: 85, rating: 4.9, img: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=900&q=80" },
-  { id: 8, title: "Aït Benhaddou & Ouarzazate", duration: "Full day", price: 95, rating: 4.8, img: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=900&q=80" },
+  { name: "Agafay desert dinner", price: 79, hrs: 6, group: "8 max", img: "https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=900&q=80", tag: "Desert" },
+  { name: "Ourika Valley & waterfalls", price: 55, hrs: 8, group: "10 max", img: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=900&q=80", tag: "Mountains" },
+  { name: "Essaouira day escape", price: 89, hrs: 10, group: "12 max", img: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=900&q=80", tag: "Coast" },
+  { name: "Tagine cooking atelier", price: 69, hrs: 4, group: "6 max", img: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=900&q=80", tag: "Culinary" },
+  { name: "Hammam & rose ritual", price: 110, hrs: 3, group: "Private", img: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=80", tag: "Wellness" },
+  { name: "Marrakech medina by night", price: 39, hrs: 3, group: "8 max", img: "https://images.unsplash.com/photo-1597211684565-dca64d72bdfe?auto=format&fit=crop&w=900&q=80", tag: "Medina" },
 ];
 
 const REVIEWS = [
-  { name: "Marie · France", text: "The Agafay sunset dinner was magic. Beautifully organized.", rating: 5 },
-  { name: "Tom · Australia", text: "Cooking class made me a tagine convert. Best 3 hours of our trip.", rating: 5 },
-  { name: "Lina · Germany", text: "Our guide in Imlil knew every flower, every Berber legend.", rating: 5 },
-  { name: "Carlos · Spain", text: "Essaouira day trip was a dream. Highly recommend Marhaba.", rating: 5 },
+  { name: "Alex · USA", text: "The Agafay dinner was pure magic — silence, stars, mint tea. Best night of the trip.", trip: "Agafay desert dinner" },
+  { name: "Marie · France", text: "Fatima taught us tagine like a grandmother. We still cook it every Sunday.", trip: "Tagine atelier" },
+  { name: "Tom · Australia", text: "Loved every minute in Ourika. Our guide knew every flower by name.", trip: "Ourika Valley" },
 ];
 
 export const Route = createFileRoute("/excursions")({
   head: () => ({
     meta: [
-      { title: "Day Excursions in Morocco — Marhaba" },
-      { name: "description", content: "Day-trip adventures across Morocco: desert sunsets, Atlas treks, medina walks, cooking classes and hammam rituals." },
-      { property: "og:title", content: "Morocco Day Excursions" },
+      { title: "Excursions · Day adventures across Morocco | Marhaba" },
+      { name: "description", content: "Half-day and full-day Moroccan adventures: desert dinners, mountain treks, coastal escapes, cooking ateliers." },
+      { property: "og:title", content: "Excursions — Marhaba" },
       { property: "og:description", content: "Day adventures, unforgettable memories." },
       { property: "og:image", content: HERO },
       { name: "twitter:image", content: HERO },
@@ -51,121 +48,118 @@ function ExcursionsPage() {
   return (
     <div>
       {/* 1. HERO */}
-      <section className="relative h-[60vh] min-h-[450px] overflow-hidden">
-        <img src={HERO} alt="" className="absolute inset-0 h-full w-full object-cover kenburns" />
-        <div className="absolute inset-0 bg-gradient-to-b from-midnight/50 to-midnight/80" />
-        <div className="relative h-full flex items-center justify-center px-6 text-center text-primary-foreground">
-          <div className="max-w-4xl">
-            <p className="text-xs uppercase tracking-[0.4em] text-accent mb-4">Excursions</p>
-            <h1 className="font-display text-5xl md:text-7xl font-medium leading-[1] text-balance">Day adventures, <em className="text-accent not-italic">unforgettable memories</em></h1>
+      <section className="bg-paper px-6 pt-12 pb-20">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-6">
+            <p className="text-[11px] uppercase tracking-[0.32em] font-bold text-coral">Excursions</p>
+            <h1 className="font-display text-[clamp(2.75rem,6vw,5.5rem)] leading-[0.95] mt-5 text-balance">
+              One day, one
+              <br /><span className="font-script text-mustard text-[1.15em]">memory</span>
+              <br />for keeps.
+            </h1>
+            <p className="mt-6 text-lg text-ink/70 max-w-md leading-relaxed">Short adventures that feel like full chapters — desert, mountain, coast and souk.</p>
+          </div>
+          <div className="lg:col-span-6 grid grid-cols-2 gap-4">
+            <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-muted -rotate-1"><img src={HERO} alt="" className="h-full w-full object-cover" /></div>
+            <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-muted rotate-2 mt-10"><img src="https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=600&q=80" alt="" className="h-full w-full object-cover" /></div>
           </div>
         </div>
       </section>
 
       {/* 2. CATEGORIES */}
-      <section className="px-6 py-24">
-        <SectionHeading eyebrow="By theme" title="Choose your kind of day" />
-        <div className="mt-14 grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6 max-w-7xl mx-auto">
-          {CATEGORIES.map((c) => (
-            <button key={c.name} className="group relative aspect-[3/4] overflow-hidden rounded-2xl">
-              <img src={c.img} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-primary-foreground text-left">
-                <h3 className="font-display text-xl font-medium">{c.name}</h3>
-                <p className="text-xs text-accent">{c.count} excursions</p>
-              </div>
-            </button>
-          ))}
+      <section className="px-6 py-20 bg-cream">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeading kicker="By mood" title="Pick your kind of" script="adventure" />
+          <div className="mt-14 grid grid-cols-2 md:grid-cols-3 gap-5">
+            {CATEGORIES.map((c) => (
+              <Link to="/excursions" key={c.name} className="group relative aspect-[5/4] rounded-2xl overflow-hidden">
+                <img src={c.img} alt={c.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className={`absolute inset-0 ${c.color} opacity-40 mix-blend-multiply`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+                <div className="absolute bottom-0 left-0 p-5 text-cream">
+                  <h3 className="font-display text-3xl">{c.name}</h3>
+                  <p className="text-xs uppercase tracking-[0.22em] mt-1 text-mustard font-bold">{c.count} experiences →</p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* 3. CARDS */}
-      <section className="bg-secondary px-6 py-24">
-        <SectionHeading eyebrow="Browse all" title="Day excursions" />
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
-          {EXCURSIONS.map((e) => (
-            <article key={e.id} className="group bg-card rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-elegant transition-all hover:-translate-y-1">
-              <div className="aspect-[4/3] overflow-hidden">
-                <img src={e.img} alt={e.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              </div>
-              <div className="p-5">
-                <h3 className="font-display text-lg font-medium leading-snug">{e.title}</h3>
-                <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                  <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {e.duration}</span>
-                  <span className="flex items-center gap-1"><Star className="h-3 w-3 fill-accent text-accent" /> {e.rating}</span>
-                </div>
-                <div className="mt-4 flex justify-between items-center">
-                  <span className="font-display text-xl font-semibold">€{e.price}</span>
-                  <Button size="sm" onClick={() => toast.success(`${e.title} booked!`)} className="bg-accent text-accent-foreground hover:bg-accent/90 h-8">Quick book</Button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. MOST LOVED */}
-      <section className="px-6 py-24">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-          <div className="relative aspect-[5/4] rounded-2xl overflow-hidden shadow-elegant">
-            <img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=1200&q=80" alt="" className="absolute inset-0 h-full w-full object-cover kenburns" />
-            <span className="absolute top-5 left-5 bg-accent text-accent-foreground text-xs font-bold uppercase px-3 py-1.5 rounded-full flex items-center gap-1"><Sparkles className="h-3 w-3" /> Most loved</span>
+      <section className="px-6 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-wrap justify-between items-end gap-4 mb-12">
+            <SectionHeading kicker="Most loved" title="This month's" script="favorites" align="left" />
+            <span className="text-xs uppercase tracking-[0.25em] font-bold text-coral flex items-center gap-2"><Heart className="h-4 w-4 fill-coral" /> Editor's picks</span>
           </div>
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] font-semibold text-clay">This month</p>
-            <h2 className="font-display text-4xl md:text-5xl mt-3">Agafay Desert Sunset & Berber Dinner</h2>
-            <p className="mt-5 text-muted-foreground text-lg">A 30-minute drive from Marrakech delivers you to a stone desert of impossible silence. Camels at golden hour, a Berber tent illuminated by lanterns, drums under a sky thick with stars.</p>
-            <ul className="mt-6 space-y-3">
-              {["Camel ride at sunset", "Three-course Moroccan feast", "Live Gnaoua music", "Hotel pickup included"].map(p => (
-                <li key={p} className="flex gap-3 items-center"><Check className="h-5 w-5 text-accent" /> {p}</li>
-              ))}
-            </ul>
-            <div className="mt-8 flex items-center gap-6">
-              <div><p className="text-xs text-muted-foreground">From</p><p className="font-display text-3xl font-semibold">€95</p></div>
-              <Button size="lg" onClick={() => toast.success("Agafay sunset reserved!")} className="bg-primary hover:bg-primary/90">Book this experience <ArrowRight className="ml-1 h-4 w-4" /></Button>
-            </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {EXCURSIONS.map((e) => (
+              <article key={e.name} className="group bg-paper rounded-2xl overflow-hidden border border-border shadow-paper hover:shadow-coral transition-all duration-500 hover:-translate-y-1">
+                <div className="relative aspect-[5/4] overflow-hidden">
+                  <img src={e.img} alt={e.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <span className="absolute top-3 left-3 bg-paper/95 text-ink text-[10px] uppercase tracking-[0.22em] font-bold px-2.5 py-1 rounded-full">{e.tag}</span>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-xl group-hover:text-coral transition">{e.name}</h3>
+                  <div className="flex items-center gap-4 text-xs text-ink/55 mt-3">
+                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {e.hrs}h</span>
+                    <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {e.group}</span>
+                    <span className="flex items-center gap-1"><Star className="h-3 w-3 fill-mustard text-mustard" /> 4.9</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                    <span><span className="text-xs text-ink/50">from</span> <span className="font-display text-2xl">€{e.price}</span></span>
+                    <Button onClick={() => toast.success(`${e.name} reserved!`)} size="sm" className="bg-ink text-cream hover:bg-coral rounded-full text-[10px] uppercase tracking-[0.2em] font-bold h-9 px-4">Book</Button>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 5. GROUP VS PRIVATE */}
-      <section className="bg-primary text-primary-foreground px-6 py-24">
-        <SectionHeading eyebrow="How you travel" title="Group or private" description="Both come with a local English-speaking guide and full insurance." light />
-        <div className="mt-14 grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {[
-            { title: "Small group", price: "from €45", icon: Users, perks: ["Max 8 travelers", "Fixed departure days", "Meet fellow explorers", "Best value"] },
-            { title: "Private", price: "from €120", icon: Star, perks: ["Just you & yours", "Departure any day", "Custom pace & stops", "VIP experience"] },
-          ].map(({ title, price, icon: Icon, perks }) => (
-            <div key={title} className="bg-primary-foreground/5 border border-primary-foreground/15 rounded-2xl p-8 backdrop-blur">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center"><Icon className="h-5 w-5 text-accent-foreground" /></div>
-                <h3 className="font-display text-3xl">{title}</h3>
+      {/* 4. PRIVATE vs GROUP */}
+      <section className="bg-ink text-cream px-6 py-20 md:py-28 grain relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <SectionHeading kicker="Two ways to go" title="Private or in" script="good company" description="Both wonderful — pick what matches your trip." light />
+          <div className="mt-14 grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {[
+              { name: "In a small group", price: "from €39", color: "bg-mustard text-ink", perks: ["Up to 12 travelers", "Set departure dates", "Meet curious souls", "Best value"] },
+              { name: "Private experience", price: "from €110", color: "bg-coral text-cream", perks: ["Just you & yours", "Any date, any pace", "Personal guide", "Bespoke route"] },
+            ].map((p) => (
+              <div key={p.name} className="bg-cream/5 backdrop-blur border border-cream/15 rounded-3xl p-8">
+                <span className={`inline-block ${p.color} text-[10px] uppercase tracking-[0.25em] font-bold px-3 py-1.5 rounded-full`}>{p.name}</span>
+                <p className="font-display text-5xl mt-6">{p.price}</p>
+                <ul className="mt-6 space-y-2.5">
+                  {p.perks.map((perk) => <li key={perk} className="flex items-center gap-3 text-cream/85"><span className="w-1.5 h-1.5 rounded-full bg-mustard" /> {perk}</li>)}
+                </ul>
               </div>
-              <p className="text-accent font-semibold">{price}</p>
-              <ul className="mt-6 space-y-3">
-                {perks.map(p => <li key={p} className="flex gap-2 items-center text-primary-foreground/90"><Check className="h-4 w-4 text-accent" /> {p}</li>)}
-              </ul>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 6. REVIEWS + CTA */}
-      <section className="px-6 py-24">
-        <SectionHeading eyebrow="Loved by travelers" title="From our guests" />
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-7xl mx-auto">
-          {REVIEWS.map(r => (
-            <div key={r.name} className="bg-card border border-border rounded-2xl p-6">
-              <div className="flex gap-0.5 mb-3">{Array.from({ length: r.rating }).map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-accent text-accent" />)}</div>
-              <p className="text-sm leading-relaxed">"{r.text}"</p>
-              <p className="mt-4 text-xs font-semibold text-clay">{r.name}</p>
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-14">
-          <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-8 font-semibold">
-            <Link to="/custom">Plan a private excursion</Link>
-          </Button>
+      {/* 5. REVIEWS + CTA */}
+      <section className="px-6 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeading kicker="Reviews wall" title="Words from the" script="people" />
+          <div className="mt-14 grid md:grid-cols-3 gap-6">
+            {REVIEWS.map((r, i) => (
+              <figure key={r.name} className={`bg-cream p-6 rounded-2xl border border-border ${i % 2 === 0 ? "-rotate-1" : "rotate-1"}`}>
+                <div className="flex gap-0.5 mb-3">{Array.from({ length: 5 }).map((_, j) => <Star key={j} className="h-3.5 w-3.5 fill-coral text-coral" />)}</div>
+                <blockquote className="font-display text-lg italic leading-snug">"{r.text}"</blockquote>
+                <figcaption className="mt-5 text-sm">
+                  <p className="font-semibold">{r.name}</p>
+                  <p className="text-xs text-ink/55 uppercase tracking-[0.2em] mt-0.5">{r.trip}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="text-center mt-16">
+            <Button asChild className="bg-ink text-cream hover:bg-coral rounded-full h-12 px-8 text-xs uppercase tracking-[0.22em] font-bold">
+              <Link to="/custom">Plan a custom day <ArrowUpRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
+          </div>
         </div>
       </section>
     </div>
